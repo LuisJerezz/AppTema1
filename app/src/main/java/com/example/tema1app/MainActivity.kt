@@ -5,15 +5,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.AlarmClock
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.tema1app.databinding.ActivityMainBinding
-
+import android.os.Build
+import java.util.Calendar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val REQUEST_CALL_PERMISSION = 1
+    private var pendingPhoneNumber: String? = null // Número pendiente de llamada, en caso de falta de permisos
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,57 +25,63 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Botón 1: Abrir otra Activity
+        // Botón 1 -->  Abrir otra Activity
         binding.phoneButton.setOnClickListener {
-            makePhoneCall("777777777")
+            val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
         }
 
-        // Botón 2: Abrir navegador Chrome
+        // Botón 2 --> Abrir navegador Chrome
         binding.navButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.youtube.com/watch?v=vJapzH_46a8&pp=ygUUY3Vyc28ga290bGluIGRlc2RlIDA%3D")
-            intent.setPackage("com.android.chrome")
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://www.youtube.com/watch?v=vJapzH_46a8&pp=ygUUY3Vyc28ga290bGluIGRlc2RlIDA%3D")
+                setPackage("com.android.chrome")
+            }
             startActivity(intent)
         }
 
-        // Botón 3: Abrir Google Maps
+        // Botón 3 --> Crear una alarma que suene en dos minutos
         binding.mapButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("geo:0,0?q=Google+Maps")
-            intent.setPackage("com.google.android.apps.maps")
-            startActivity(intent)
-        }
 
-        // Botón 4: Abrir la aplicación de la calculadora
-        binding.appButton.setOnClickListener {
-            val intent = Intent(android.provider.Settings.ACTION_SETTINGS)
-            startActivity(intent)
-        }
-    }
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.MINUTE, 2)
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minutes = calendar.get(Calendar.MINUTE)
 
-    private fun makePhoneCall(phoneNumber: String) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            // Si no se tiene el permiso, se solicita
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL_PERMISSION)
-        } else {
-            // Si ya se tiene el permiso, se realiza la llamada
-            val callIntent = Intent(Intent.ACTION_CALL)
-            callIntent.data = Uri.parse("tel:$phoneNumber")
-            startActivity(callIntent)
-        }
-    }
+            val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, "Alarma de prueba")
+                putExtra(AlarmClock.EXTRA_HOUR, hour)
+                putExtra(AlarmClock.EXTRA_MINUTES, minutes)
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_CALL_PERMISSION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permiso concedido, se puede hacer la llamada
-                    makePhoneCall("777777777")
-                } else {
-                    // Permiso denegado, manejar el caso (por ejemplo, mostrar un mensaje al usuario)
-                }
+            }
+
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No se encontró ninguna aplicación de reloj", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+        // Botón 4 --> Mandar correo con Gmail
+        binding.appButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_EMAIL, arrayOf("luisjerezz04@gmail.com"))
+                putExtra(Intent.EXTRA_SUBJECT, "APP TEMA 1")
+                putExtra(Intent.EXTRA_TEXT, "Prueba completada")
+                setPackage("com.google.android.gm")
+            }
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Gmail no está instalado en este dispositivo", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
+
+
+
+
 }

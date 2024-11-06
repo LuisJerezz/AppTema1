@@ -7,7 +7,6 @@
     android:background="#8EFF8F"
     tools:context=".MainActivity">
 
-    <!-- Imagen principal centrada con borde -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="220dp"
@@ -20,7 +19,6 @@
         app:srcCompat="@android:drawable/ic_menu_view"
         app:tint="#4CAF50" />
 
-    <!-- Primer botón arriba a la izquierda con borde -->
     <ImageButton
         android:id="@+id/phone_button"
         android:layout_width="72dp"
@@ -33,7 +31,6 @@
         app:srcCompat="@android:drawable/stat_sys_phone_call_on_hold"
         app:tint="#4CAF50" />
 
-    <!-- Segundo botón arriba a la derecha con borde -->
     <ImageButton
         android:id="@+id/nav_button"
         android:layout_width="72dp"
@@ -46,7 +43,6 @@
         app:srcCompat="?android:attr/actionModeWebSearchDrawable"
         app:tint="#4CAF50" />
 
-    <!-- Tercer botón abajo a la izquierda con borde -->
     <ImageButton
         android:id="@+id/map_button"
         android:layout_width="72dp"
@@ -56,10 +52,9 @@
         app:layout_constraintEnd_toStartOf="@+id/app_button"
         app:layout_constraintTop_toBottomOf="@id/phone_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_mapmode"
+        app:srcCompat="@android:drawable/ic_lock_idle_alarm"
         app:tint="#4CAF50" />
 
-    <!-- Cuarto botón abajo a la derecha con borde -->
     <ImageButton
         android:id="@+id/app_button"
         android:layout_width="72dp"
@@ -69,7 +64,7 @@
         app:layout_constraintStart_toEndOf="@+id/map_button"
         app:layout_constraintTop_toBottomOf="@id/nav_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_manage"
+        app:srcCompat="@android:drawable/ic_dialog_email"
         app:tint="#4CAF50" />
 
 
